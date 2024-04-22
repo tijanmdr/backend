@@ -1,35 +1,55 @@
-const express = require('express');
-require('dotenv').config();
+const express = require("express");
+require("dotenv").config();
 const app = express();
-const mysql = require('mysql2/promise');
+const _mysql = require("./config/db.js");
 
-// Replace with your actual database credentials
-const dbConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PWD,
-  database: process.env.DB_NAME
-};
-
-// Connect to MySQL database (optional: move to separate file)
-async function connectDB() {
-  try {
-    const connection = await mysql.createConnection(dbConfig);
-    console.log('Connected to MySQL database');
-    return connection;
-  } catch (error) {
-    console.error('Error connecting to MySQL:', error);
-    process.exit(1);
-  }
-}
+const connection = await _mysql.connectDB();
 
 // Set Pug as the templating engine
-app.set('view engine', 'ejs');
-app.set('views', './views');
+app.set("view engine", "ejs");
+app.set("views", "./views");
 
 // Route to render a Pug template with data (replace with your logic)
-app.get('/', async (req, res) => {
-  res.render('index');
+app.get("/", async (req, res) => {
+  res.render("index");
+});
+
+app.get("/db_seed", async (req, res) => {
+  const argon2 = require("argon2");
+
+  try {
+    const hash = await argon2.hash("password");
+    connection.execute(
+      "insert into users (name, email, password) values (?,?,?)",
+      ["Tijan", "tijanmdr@gmail.com", hash],
+      (err, rows) => {
+        console.log(err, rows);
+      }
+    );
+  } catch (err) {
+    //...
+  }
+});
+
+app.get("/check", async (req, res) => {
+  const argon = require("argon2");
+
+  connection.execute(
+    "select * from users where email=?",
+    ["tijanmdr@gmail.com"],
+    (err, rows) => {
+      console.log(123);
+      return res.json(rows);
+    }
+  );
+  console.log("this s");
+  return res.json({ message: "working" });
+
+  // if (await argon.verify("<big long hash>", "password")) {
+  //   // password match
+  // } else {
+  //   // password did not match
+  // }
 });
 
 // Start the server
