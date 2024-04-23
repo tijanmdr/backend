@@ -3,10 +3,11 @@ const mysql = require('mysql2/promise');
 const db = require('./config/db.config.js');
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
+const authMiddleware = require('./config/auth');
 require("dotenv").config();
 
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 // Connect to MySQL database (optional: move to separate file)
@@ -57,8 +58,6 @@ app.post('/login', async (req, res) => {
         if (!req?.body?.password) {
             return res.status(400).json({message: "Password is required!"});
         }
-        console.log(req.body.email);
-
 
         const [rows] = await connection.execute(
             'select * from users where email=?',
@@ -77,7 +76,10 @@ app.post('/login', async (req, res) => {
         console.log(err);
         return res.status(500).json({message: `Error: ${err.message}`});
     }
+});
 
+app.get('/check_middleware', authMiddleware, async (req, res) => {
+return res.json({m:1})
 });
 
 // Start the server
