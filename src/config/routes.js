@@ -1,13 +1,13 @@
 const express = require('express');
 const db = require('./db.config.js');
-const jwt = require("jsonwebtoken");
 const authMiddleware = require('./auth');
+const users = require('../users');
 
 const router = express.Router();
 
 // Route to render a Pug template with data (replace with your logic)
 router.get('/status', async (req, res) => {
-    return res.json({message: "working!"})
+    return res.json({message: "working!"});
 });
 
 router.get('/db_seed', async (req, res) => {
@@ -37,19 +37,8 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({message: "Password is required!"});
         }
 
-        const [rows] = await connection.execute(
-            'select * from users where email=?',
-            [req.body.email]
-        );
-        if (rows.length !== 0) {
-            if (await argon.verify(rows[0].password, req.body.password)) {
-                const token = jwt.sign(rows[0], process.env.JWT_SECRET_KEY);
-                return res.json({token: token, message: "Login Successful!"});
-            } else {
-                return res.status(401).json({message: "Incorrect Password!"});
-            }
-        }
-        return res.status(401).json({message: "Incorrect Email Address!"});
+        const result = await users.login(req.body);
+        return res.status(result.status).json(result.data);
     } catch (err) {
         console.log(err);
         return res.status(500).json({message: `Error: ${err.message}`});
@@ -57,7 +46,7 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/check_middleware', authMiddleware, async (req, res) => {
-    return res.json({m:1})
+    return res.json({m: 1});
 });
 
-module.exports = {router}
+module.exports = {router};
