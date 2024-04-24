@@ -30,4 +30,12 @@ const car_rego = [
     'YDD77D', 'YRRTDD'
 ];
 
+const lessons = [
+    'Steering wheel',
+    'balance of car',
+    'side lights',
+    'speed limits',
+    'head checks'
+];
+
 module.exports = {connectDB, user_types, car_transmission, car_rego};
