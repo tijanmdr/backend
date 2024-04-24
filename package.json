@@ -6,7 +6,10 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "generate:token": "node src/config/generateToken.config.js"
+    "generate:token": "node src/config/generateToken.config.js",
+    "db:refresh": "npx dbmate rollback && npx dbmate migrate",
+    "db:seed": "node src/config/seeder.js",
+    "db:reload": "npx dbmate rollback && npx dbmate migrate && node src/config/seeder.js"
   },
   "keywords": [],
   "author": "",
