@@ -6,7 +6,7 @@ const argon2 = require("argon2");
 const login = async (req) => {
     const connection = await db.connectDB();
     const [rows] = await connection.execute(
-        'select * from users where email=?',
+        db.sql_queries.login,
         [req.email]
     );
     if (rows.length !== 0) {
@@ -14,10 +14,10 @@ const login = async (req) => {
             const token = jwt.sign(rows[0], process.env.JWT_SECRET_KEY);
             return {data: {token: `Bearer ${token}`, message: "Login Successful!"}, status: 200};
         } else {
-            return {data : {message: "Incorrect Password!"}, status: 401};
+            return {data: {message: "Incorrect Password!"}, status: 401};
         }
     }
-    return {data : {message: "Incorrect Email Address!"}, status: 401};
+    return {data: {message: "Incorrect Email Address!"}, status: 401};
 };
 
 const addStudent = async (req) => {
@@ -27,21 +27,28 @@ const addStudent = async (req) => {
     await connection.beginTransaction();
 
     const [user] = await connection.execute(
-        "INSERT INTO users (name, email, password, type) VALUES (?, ?, ?, ?)",
+        db.sql_queries.insert_user,
         [req.name, req.email, hash, db.user_types['student']]
     );
-    if (user.affectedRows === 1){
+    if (user.affectedRows === 1) {
+        let inputs = [user.insertId, req.phone, req.address, req.dob, req.license, req.license_expiry, req.school_work]
+        let sql = db.sql_queries.student_details
+
+        if (req?.transmission) {
+            sql = db.sql_queries.student_details_transmission
+            inputs.push(req.transmission)
+        }
+
         const [user_details] = await connection.execute(
-            "insert into user_details (user, phone, address, dob, license, license_expiry, school_work) values (?,?,?,?,?,?,?)",
-            [user.insertId, req.phone, req.address, req.dob, req.license, req.license_expiry, req.school_work]
+            sql, inputs
         );
 
         if (user_details.affectedRows === 1) {
             await connection.commit();
-            return {data : {message: "Student insert successful!"}, status: 200};
+            return {data: {message: "Student insert successful!"}, status: 200};
         }
     }
-    return {data : {message: "Incorrect Email Address!"}, status: 401};
+    return {data: {message: "Incorrect Email Address!"}, status: 401};
 };
 
-module.exports = {login,addStudent};
+module.exports = {login, addStudent};

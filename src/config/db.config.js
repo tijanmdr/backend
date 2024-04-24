@@ -38,4 +38,11 @@ const lessons = [
     'head checks'
 ];
 
-module.exports = {connectDB, user_types, car_transmission, car_rego};
+const sql_queries = {
+    'login': 'select * from users where email=?',
+    'insert_user': 'INSERT INTO users (name, email, password, type) VALUES (?, ?, ?, ?)',
+    'student_details': "insert into user_details (user, phone, address, dob, license, license_expiry, school_work) values (?,?,?,?,?,?,?)",
+    'student_details_transmission': "insert into user_details (user, phone, address, dob, license, license_expiry, school_work, transmission) values (?,?,?,?,?,?,?,?)",
+}
+
+module.exports = {connectDB, user_types, car_transmission, car_rego, sql_queries};

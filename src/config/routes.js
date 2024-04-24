@@ -31,7 +31,7 @@ router.post('/add_student', authMiddleware, async (req, res) => {
 
     fields.map((field, key) => {
         if (!req?.body?.[field]) {
-            missing = true
+            missing = true;
             missingItem = key;
             return;
         }
