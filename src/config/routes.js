@@ -1,11 +1,9 @@
 const express = require('express');
-const db = require('./db.config.js');
 const authMiddleware = require('./auth');
 const users = require('../users');
 
 const router = express.Router();
 
-// Route to render a Pug template with data (replace with your logic)
 router.get('/status', async (req, res) => {
     return res.json({message: "working!"});
 });
@@ -25,10 +23,6 @@ router.post('/login', async (req, res) => {
         console.log(err);
         return res.status(500).json({message: `Error: ${err.message}`});
     }
-});
-
-router.get('/check_middleware', authMiddleware, async (req, res) => {
-    return res.json({m: 1});
 });
 
 module.exports = {router};
