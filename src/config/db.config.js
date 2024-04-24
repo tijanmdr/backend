@@ -11,9 +11,7 @@ const db = {
 // Connect to MySQL database (optional: move to separate file)
 async function connectDB() {
   try {
-    const connection = await mysql.createConnection(db);
-    console.log('Connected to MySQL database');
-    return connection;
+    return await mysql.createConnection(db);
   } catch (error) {
     console.error('Error connecting to MySQL:', error);
     process.exit(1);

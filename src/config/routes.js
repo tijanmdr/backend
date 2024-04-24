@@ -10,26 +10,8 @@ router.get('/status', async (req, res) => {
     return res.json({message: "working!"});
 });
 
-router.get('/db_seed', async (req, res) => {
-    const argon2 = require('argon2');
-    const connection = await db.connectDB();
-
-    try {
-        const hash = await argon2.hash('password');
-        const [result] = await connection.execute(
-            "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-            ['Tijan', 'tijanmdr@gmail.com', hash]
-        );
-        return res.json({'message': 'Successful!'});
-    } catch (err) {
-        return res.json({'message': err.message});
-    }
-});
-
 router.post('/login', async (req, res) => {
     try {
-        const argon = require('argon2');
-        const connection = await db.connectDB();
         if (!req?.body?.email) {
             return res.status(400).json({message: "Email address is required!"});
         }

@@ -1,6 +1,7 @@
 const argon = require("argon2");
 const jwt = require("jsonwebtoken");
 const db = require('./config/db.config');
+const argon2 = require("argon2");
 
 const login = async (req) => {
     const connection = await db.connectDB();
