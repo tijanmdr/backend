@@ -9,8 +9,8 @@ async function seed() {
 
     try {
         const [result] = await connection.execute(
-            "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-            ['Tijan', 'tijanmdr@gmail.com', hash]
+            "INSERT INTO users (name, email, password, type) VALUES (?, ?, ?, ?)",
+            ['Tijan', 'tijanmdr@gmail.com', hash, db.user_types['instructor']]
         );
 
         if (result.affectedRows === 1) {
