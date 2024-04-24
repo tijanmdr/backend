@@ -18,4 +18,8 @@ async function connectDB() {
   }
 }
 
-module.exports = {connectDB}
+const user_types = {
+  instructor: 0, student: 1
+}
+
+module.exports = {connectDB, user_types}
