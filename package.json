@@ -7,9 +7,9 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "generate:token": "node src/config/generateToken.config.js",
-    "db:refresh": "npx dbmate rollback && npx dbmate migrate",
+    "db:refresh": "npx dbmate drop && npx dbmate up",
     "db:seed": "node src/config/seeder.js",
-    "db:reload": "npx dbmate rollback && npx dbmate migrate && node src/config/seeder.js"
+    "db:reload": "npm run db:refresh && npm run db:seed"
   },
   "keywords": [],
   "author": "",
