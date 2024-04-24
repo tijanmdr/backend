@@ -1,6 +1,7 @@
 const argon = require("argon2");
 const jwt = require("jsonwebtoken");
 const db = require('./config/db.config');
+const argon2 = require("argon2");
 
 const login = async (req) => {
     const connection = await db.connectDB();
@@ -19,4 +20,28 @@ const login = async (req) => {
     return {data : {message: "Incorrect Email Address!"}, status: 401};
 };
 
-module.exports = {login};
+const addStudent = async (req) => {
+    const connection = await db.connectDB();
+    const hash = await argon2.hash(req.password);
+
+    await connection.beginTransaction();
+
+    const [user] = await connection.execute(
+        "INSERT INTO users (name, email, password, type) VALUES (?, ?, ?, ?)",
+        [req.name, req.email, hash, db.user_types['student']]
+    );
+    if (user.affectedRows === 1){
+        const [user_details] = await connection.execute(
+            "insert into user_details (user, phone, address, dob, license, license_expiry, school_work) values (?,?,?,?,?,?,?)",
+            [user.insertId, req.phone, req.address, req.dob, req.license, req.license_expiry, req.school_work]
+        );
+
+        if (user_details.affectedRows === 1) {
+            await connection.commit();
+            return {data : {message: "Student insert successful!"}, status: 200};
+        }
+    }
+    return {data : {message: "Incorrect Email Address!"}, status: 401};
+};
+
+module.exports = {login,addStudent};
