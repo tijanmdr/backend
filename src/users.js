@@ -11,7 +11,8 @@ const login = async (req) => {
     );
     if (rows.length !== 0) {
         if (await argon.verify(rows[0].password, req.password)) {
-            const token = jwt.sign(rows[0], process.env.JWT_SECRET_KEY);
+            const _user = {id: rows[0].id, name: rows[0].name, email: rows[0].email};
+            const token = jwt.sign(_user, process.env.JWT_SECRET_KEY);
             return {data: {token: `Bearer ${token}`, message: "Login Successful!"}, status: 200};
         } else {
             return {data: {message: "Incorrect Password!"}, status: 401};
@@ -31,12 +32,12 @@ const addStudent = async (req) => {
         [req.name, req.email, hash, db.user_types['student']]
     );
     if (user.affectedRows === 1) {
-        let inputs = [user.insertId, req.phone, req.address, req.dob, req.license, req.license_expiry, req.school_work]
-        let sql = db.sql_queries.student_details
+        let inputs = [user.insertId, req.phone, req.address, req.dob, req.license, req.license_expiry, req.school_work];
+        let sql = db.sql_queries.student_details;
 
         if (req?.transmission) {
-            sql = db.sql_queries.student_details_transmission
-            inputs.push(req.transmission)
+            sql = db.sql_queries.student_details_transmission;
+            inputs.push(req.transmission);
         }
 
         const [user_details] = await connection.execute(
@@ -51,4 +52,24 @@ const addStudent = async (req) => {
     return {data: {message: "Incorrect Email Address!"}, status: 401};
 };
 
-module.exports = {login, addStudent};
+const getUserDetails = async (req) => {
+    if (req.query.user) {
+        const connection = await db.connectDB();
+        const [rows] = await connection.execute(
+            db.sql_queries.get_user,
+            [req.query.user]
+        );
+
+        if (rows.length) {
+            return {data: {message: `User details for ${rows[0].name}!`, data: rows[0]}, status: 200};
+        }
+        return {data: {message: "User not found!"}, status: 400};
+    } else {
+        const usertoken = req.headers.authorization;
+        const token = usertoken.split(' ');
+        const decoded = jwt.verify(token[1], process.env.JWT_SECRET_KEY);
+        return {data: {message: `User details for ${decoded.name}!`, data: decoded}, status: 200};
+    }
+};
+
+module.exports = {login, addStudent, getUserDetails};

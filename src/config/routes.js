@@ -43,8 +43,11 @@ router.post('/add_student', authMiddleware, async (req, res) => {
 
     const result = await users.addStudent(req.body);
     return res.status(result.status).json(result.data);
+});
 
-    return;
+router.get('/user_details', authMiddleware, async (req, res) => {
+    const user_details = await users.getUserDetails(req);
+    return res.status(user_details.status).json(user_details.data);
 });
 
 module.exports = {router};
