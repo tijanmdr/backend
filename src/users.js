@@ -53,23 +53,26 @@ const addStudent = async (req) => {
 };
 
 const getUserDetails = async (req) => {
+    const connection = await db.connectDB();
+    let user_id = null;
     if (req.query.user) {
-        const connection = await db.connectDB();
-        const [rows] = await connection.execute(
-            db.sql_queries.get_user,
-            [req.query.user]
-        );
-
-        if (rows.length) {
-            return {data: {message: `User details for ${rows[0].name}!`, data: rows[0]}, status: 200};
-        }
-        return {data: {message: "User not found!"}, status: 400};
+        user_id = req.query.user;
     } else {
-        const usertoken = req.headers.authorization;
-        const token = usertoken.split(' ');
+        const header_token = req.headers.authorization;
+        const token = header_token.split(' ');
         const decoded = jwt.verify(token[1], process.env.JWT_SECRET_KEY);
-        return {data: {message: `User details for ${decoded.name}!`, data: decoded}, status: 200};
+        user_id = decoded.id;
     }
+
+    const [rows] = await connection.execute(
+        db.sql_queries.get_user,
+        [user_id]
+    );
+
+    if (rows.length) {
+        return {data: {message: `User details for ${rows[0].name}!`, data: rows[0]}, status: 200};
+    }
+    return {data: {message: "User not found!"}, status: 400};
 };
 
 module.exports = {login, addStudent, getUserDetails};

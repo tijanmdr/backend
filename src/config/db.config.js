@@ -40,7 +40,7 @@ const lessons = [
 
 const sql_queries = {
     'login': 'select * from users where email=?',
-    'get_user': 'select id, name, email from users where id=?',
+    'get_user': 'select u.id, u.name, u.email, ud.* from users u inner join user_details ud on u.id=ud.user where u.id=?',
     'insert_user': 'INSERT INTO users (name, email, password, type) VALUES (?, ?, ?, ?)',
     'student_details': "insert into user_details (user, phone, address, dob, license, license_expiry, school_work) values (?,?,?,?,?,?,?)",
     'student_details_transmission': "insert into user_details (user, phone, address, dob, license, license_expiry, school_work, transmission) values (?,?,?,?,?,?,?,?)",
