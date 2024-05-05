@@ -50,4 +50,22 @@ router.get('/user_details', authMiddleware, async (req, res) => {
     return res.status(user_details.status).json(user_details.data);
 });
 
+router.post('/lesson_add', authMiddleware, async (req, res) => {
+    const fields = ['driver', 'student', 'date_received', 'start_odo', 'end_odo', 'taught', 'competencies_assessed', 'achieved', 'start_time', 'end_time', 'location', 'comments'];
+    let missing = false, missingItem = null;
+
+    fields.map((field, key) => {
+        if (!req?.body?.[field]) {
+            missing = true;
+            missingItem = key;
+            return;
+        }
+    });
+
+    if (missing) {
+        return res.status(400).json({message: `${fields[missingItem]} required fields!`});
+    }
+    return res.json({message: req.body});
+});
+
 module.exports = {router};
