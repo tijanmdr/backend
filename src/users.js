@@ -75,4 +75,44 @@ const getUserDetails = async (req) => {
     return {data: {message: "User not found!"}, status: 400};
 };
 
-module.exports = {login, addStudent, getUserDetails};
+const addLesson = async (req) => {
+    const connection = await db.connectDB();
+
+    await connection.beginTransaction();
+
+    const [is_student] = await connection.execute(
+        db.sql_queries.is_student,
+        [req.student]
+    );
+
+    if (is_student.length) {
+
+    } else {
+        return {data: {message: "Student not found!"}, status: 500};
+    }
+    // const [user] = await connection.execute(
+    //     db.sql_queries.insert_user,
+    //     [req.name, req.email, hash, db.user_types['student']]
+    // );
+    // if (user.affectedRows === 1) {
+    //     let inputs = [user.insertId, req.phone, req.address, req.dob, req.license, req.license_expiry, req.school_work];
+    //     let sql = db.sql_queries.student_details;
+    //
+    //     if (req?.transmission) {
+    //         sql = db.sql_queries.student_details_transmission;
+    //         inputs.push(req.transmission);
+    //     }
+    //
+    //     const [user_details] = await connection.execute(
+    //         sql, inputs
+    //     );
+    //
+    //     if (user_details.affectedRows === 1) {
+    //         await connection.commit();
+    //         return {data: {message: "Student insert successful!"}, status: 200};
+    //     }
+    // }
+    return {data: {message: "Incorrect Email Address!"}, status: 401};
+};
+
+module.exports = {login, addStudent, getUserDetails, addLesson};

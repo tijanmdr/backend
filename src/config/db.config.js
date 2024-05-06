@@ -30,13 +30,13 @@ const car_rego = [
     'YDD77D', 'YRRTDD'
 ];
 
-const lessons = [
-    'Steering wheel',
-    'balance of car',
-    'side lights',
-    'speed limits',
-    'head checks'
-];
+const lessons = {
+    1: 'Steering wheel',
+    2:'balance of car',
+    3:'side lights',
+    4:'speed limits',
+    5:'head checks'
+};
 
 const sql_queries = {
     'login': 'select * from users where email=?',
@@ -44,6 +44,7 @@ const sql_queries = {
     'insert_user': 'INSERT INTO users (name, email, password, type) VALUES (?, ?, ?, ?)',
     'student_details': "insert into user_details (user, phone, address, dob, license, license_expiry, school_work) values (?,?,?,?,?,?,?)",
     'student_details_transmission': "insert into user_details (user, phone, address, dob, license, license_expiry, school_work, transmission) values (?,?,?,?,?,?,?,?)",
+    'is_student': `select id from users where id=? and type=${user_types['student']}`
 }
 
-module.exports = {connectDB, user_types, car_transmission, car_rego, sql_queries};
+module.exports = {connectDB, user_types, car_transmission, car_rego, sql_queries, lessons};
