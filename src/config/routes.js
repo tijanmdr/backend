@@ -89,8 +89,6 @@ router.post('/lesson_add', authMiddleware, async (req, res) => {
         return res.status(requestBody.competencies_assessed?.status).json({message: requestBody.competencies_assessed?.message});
     }
 
-    return res.json({message: requestBody});
-
     const result = await users.addLesson(requestBody);
     return res.status(result.status).json(result.data);
 });

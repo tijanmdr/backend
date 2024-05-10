@@ -44,7 +44,8 @@ const sql_queries = {
     'insert_user': 'INSERT INTO users (name, email, password, type) VALUES (?, ?, ?, ?)',
     'student_details': "insert into user_details (user, phone, address, dob, license, license_expiry, school_work) values (?,?,?,?,?,?,?)",
     'student_details_transmission': "insert into user_details (user, phone, address, dob, license, license_expiry, school_work, transmission) values (?,?,?,?,?,?,?,?)",
-    'is_student': `select id from users where id=? and type=${user_types['student']}`
+    'is_student': `select id from users where id=? and type=${user_types['student']}`,
+    'add_lesson_for_student': 'insert into lesson_received (student, driver, taught, competencies_assessed, achieved, start_time, end_time, start_odo, end_odo, date_received, location, comments)  values (?,?,?,?,?,?,?,?,?,?,?,?)'
 }
 
 module.exports = {connectDB, user_types, car_transmission, car_rego, sql_queries, lessons};
