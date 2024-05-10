@@ -13,11 +13,7 @@ app.use(bodyParser.json());
 // app.set('view engine', 'ejs');
 // app.set('views', './views');
 
-// Route to render a Pug template with data (replace with your logic)
-app.get('/', async (req, res) => {
-    res.render('index');
-});
-
+// router done
 app.use('/', router);
 
 // Start the server
