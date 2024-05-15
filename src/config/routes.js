@@ -93,6 +93,14 @@ router.post('/lesson_add', authMiddleware, async (req, res) => {
     return res.status(result.status).json(result.data);
 });
 
+router.get('/list_lessons/:student', authMiddleware, async (req, res) => {
+    return res.json({message: req.params.student});
+});
+
+router.patch('/update_lesson/:id', authMiddleware, async (req, res) => {
+    return res.json({message: req.params.id});
+});
+
 function validateArrays(arrayList, type) {
     let _notInt = false, _notIncluded = false;
     arrayList.forEach((_res, key) => {
