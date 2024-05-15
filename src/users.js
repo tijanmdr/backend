@@ -77,8 +77,11 @@ const getUserDetails = async (req) => {
 
 const listLessonsByStudent = async (student) => {
     const connection = await db.connectDB();
+    const [is_student] = await connection.execute(db.sql_queries.is_student, [student]);
+    if (!is_student.length)
+        return {data: {message: 'Student not found!'}, status: 400};
+
     const [lessons] = await connection.execute(db.sql_queries.list_lessons_student, [student]);
-    console.log(lessons);
 
     if (lessons.length) {
         lessons.forEach(_lesson => {
