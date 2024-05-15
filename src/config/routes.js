@@ -51,6 +51,11 @@ router.get('/user_details', authMiddleware, async (req, res) => {
     return res.status(user_details.status).json(user_details.data);
 });
 
+router.get('/list_lessons/:student', authMiddleware, async (req, res) => {
+    const results = await users.listLessonsByStudent(req.params.student);
+    return res.status(results.status).json(results.data);
+});
+
 router.post('/lesson_add', authMiddleware, async (req, res) => {
     const requestBody = req.body;
     const fields = ['driver', 'student', 'date_received', 'start_odo', 'end_odo', 'taught', 'competencies_assessed', 'achieved', 'start_time', 'end_time', 'location', 'comments'];
@@ -91,10 +96,6 @@ router.post('/lesson_add', authMiddleware, async (req, res) => {
 
     const result = await users.addLesson(requestBody);
     return res.status(result.status).json(result.data);
-});
-
-router.get('/list_lessons/:student', authMiddleware, async (req, res) => {
-    return res.json({message: req.params.student});
 });
 
 router.patch('/update_lesson/:id', authMiddleware, async (req, res) => {

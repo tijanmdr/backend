@@ -75,6 +75,22 @@ const getUserDetails = async (req) => {
     return {data: {message: "User not found!"}, status: 400};
 };
 
+const listLessonsByStudent = async (student) => {
+    const connection = await db.connectDB();
+    const [lessons] = await connection.execute(db.sql_queries.list_lessons_student, [student]);
+    console.log(lessons);
+
+    if (lessons.length) {
+        lessons.forEach(_lesson => {
+            _lesson.achieved = JSON.parse(_lesson.achieved);
+            _lesson.competencies_assessed = JSON.parse(_lesson.competencies_assessed);
+            _lesson.taught = JSON.parse(_lesson.taught);
+        });
+
+        return {data: {message: "List Successful!", data: lessons}, status: 200};
+    }
+};
+
 const addLesson = async (req) => {
     const connection = await db.connectDB();
 
@@ -107,4 +123,4 @@ const addLesson = async (req) => {
     return {data: {message: "Incorrect Email Address!"}, status: 401};
 };
 
-module.exports = {login, addStudent, getUserDetails, addLesson};
+module.exports = {login, addStudent, getUserDetails, addLesson, listLessonsByStudent};
