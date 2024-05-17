@@ -52,6 +52,12 @@ const addStudent = async (req) => {
     return {data: {message: "Incorrect Email Address!"}, status: 401};
 };
 
+const getAllStudents = async () => {
+    const connection = await db.connectDB();
+    const [rows] = await connection.execute(db.sql_queries.get_all_students);
+    return {data: {message: 'Student retrieval successful!', data: rows}, status: 200};
+};
+
 const getUserDetails = async (req) => {
     const connection = await db.connectDB();
     let user_id = null;
@@ -123,7 +129,6 @@ const addLesson = async (req) => {
     } else {
         return {data: {message: "Student not found!"}, status: 500};
     }
-    return {data: {message: "Incorrect Email Address!"}, status: 401};
 };
 
-module.exports = {login, addStudent, getUserDetails, addLesson, listLessonsByStudent};
+module.exports = {login, addStudent, getUserDetails, addLesson, listLessonsByStudent, getAllStudents};

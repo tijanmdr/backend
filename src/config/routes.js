@@ -26,6 +26,11 @@ router.post('/login', async (req, res) => {
     }
 });
 
+router.get('/list_students', authMiddleware, async (req, res) => {
+    const result = await users.getAllStudents();
+    return res.status(result.status).json(result.data);
+});
+
 router.post('/add_student', authMiddleware, async (req, res) => {
     const fields = ['name', 'email', 'password', 'phone', 'address', 'license', 'dob', 'license_expiry', 'school_work'];
     let missing = false, missingItem = null;
